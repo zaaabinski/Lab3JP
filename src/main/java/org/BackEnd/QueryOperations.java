@@ -1,8 +1,9 @@
 package org.BackEnd;
 
 import java.sql.*;
+import java.util.ArrayList;
 
-public class QueryTest {
+public class QueryOperations {
 
     public static boolean CheckIfTableExists(Connection connection) throws SQLException {
         Statement statement = connection.createStatement();
@@ -53,19 +54,26 @@ public class QueryTest {
         statement.executeUpdate();
     }
 
-    public static void ShowBase(Connection connection) throws SQLException {
+    public static ArrayList<String> ShowBase(Connection connection) throws SQLException {
         PreparedStatement statement = connection.prepareStatement("SELECT * FROM OPINIONS");
         ResultSet rs = statement.executeQuery();
-
+        ArrayList<String> Baselines = new ArrayList<>();
         while(rs.next()) {
-            System.out.print(rs.getInt("id")); System.out.print(" ");
-            System.out.print(rs.getInt("staffNumber")); System.out.print(" ");
-            System.out.print(rs.getString("opinionDate")); System.out.print(" ");
-            System.out.print(rs.getString("opinionStatus")); System.out.print(" ");
-            System.out.print(rs.getString("wage")); System.out.print(" ");
-            System.out.print(rs.getString("comment")); System.out.print(" ");
-            System.out.println();
+            String temp;
+            String statusOfOpinion;
+            if(rs.getBoolean("opinionStatus")) {
+                statusOfOpinion= "positive";
+            }
+            else{
+                statusOfOpinion= "negative";
+            }
+
+            temp = rs.getInt("id") + " " + rs.getString("staffNumber") + " "
+                    + rs.getString("opinionDate") + " " + statusOfOpinion + " " + rs.getString("wage")
+                    + " " + rs.getString("comment") ;
+            Baselines.add(temp);
         }
+        return Baselines;
     }
 
     public static void DeleteFromBase(int opinionID, Connection connection) throws SQLException {
@@ -74,5 +82,4 @@ public class QueryTest {
         statement.setInt(1, opinionID);
         statement.executeUpdate();
     }
-
 }
