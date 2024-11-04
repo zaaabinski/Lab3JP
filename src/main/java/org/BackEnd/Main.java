@@ -1,5 +1,7 @@
 package org.BackEnd;
 
+import org.FrontEnd.Front;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -9,17 +11,15 @@ public class Main {
         Connection connection;
         try {
             connection = DatabaseConnection.GetConnection();
-                if (!QueryTest.CheckIfTableExists(connection))
+                if (!QueryOperations.CheckIfTableExists(connection))
                 {
-                    QueryTest.CreateTable(connection);
+                    QueryOperations.CreateTable(connection);
                 }
-
-             QueryTest.InsertToBase(1,"2024-10-10",true, 10, "Założył firme", connection);
-            //QueryTest.DeleteFromBase(2,connection);
-            QueryTest.ShowBase(connection);
-
+            Front.StartUI();
         } catch (SQLException e) {
             System.out.println("Something went wrong");
         }
     }
 }
+
+
