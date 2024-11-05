@@ -1,9 +1,8 @@
 package org.BackEnd;
 
 import java.sql.*;
-import java.util.ArrayList;
 
-public class TrendLine {
+public class Trend {
 
     public static int GetTrend(Connection connection, int staffNumber, String start, String end)
     {
