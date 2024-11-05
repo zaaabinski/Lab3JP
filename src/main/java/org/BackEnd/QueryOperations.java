@@ -59,7 +59,6 @@ public class QueryOperations {
         ResultSet rs = statement.executeQuery();
         ArrayList<String> Baselines = new ArrayList<>();
         while(rs.next()) {
-            String temp;
             String statusOfOpinion;
             if(rs.getBoolean("opinionStatus")) {
                 statusOfOpinion= "positive";
@@ -68,7 +67,7 @@ public class QueryOperations {
                 statusOfOpinion= "negative";
             }
 
-            temp = rs.getInt("id") + " " + rs.getString("staffNumber") + " "
+            String temp = rs.getInt("id") + " " + rs.getString("staffNumber") + " "
                     + rs.getString("opinionDate") + " " + statusOfOpinion + " " + rs.getString("wage")
                     + " " + rs.getString("comment") ;
             Baselines.add(temp);
