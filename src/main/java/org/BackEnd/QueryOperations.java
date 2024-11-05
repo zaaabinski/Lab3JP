@@ -11,6 +11,7 @@ public class QueryOperations {
         String query = "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'OPINIONS'";
 
         ResultSet resultSet = statement.executeQuery(query);
+
         if (resultSet.next()) {
             int count = resultSet.getInt(1);
             if (count > 0) {
@@ -30,14 +31,13 @@ public class QueryOperations {
                 "staffNumber INT , " +
                 "opinionDate DATE, " +
                 "opinionStatus BOOLEAN, " +
-                "wage INT, "+
+                "wage INT, " +
                 "comment text)";
 
         statement.executeUpdate(createTableSQL);
     }
 
-    public static void InsertToBase(int staffNumber, String date,Boolean status, int wage, String comment, Connection currentConnection) throws SQLException {
-
+    public static void InsertToBase(int staffNumber, String date, Boolean status, int wage, String comment, Connection currentConnection) throws SQLException {
         String insertSQL = "INSERT INTO OPINIONS (staffNumber,opinionDate, opinionStatus, wage,comment) VALUES (?,?,?,?,?)";
         PreparedStatement statement = currentConnection.prepareStatement(insertSQL);
 
@@ -58,18 +58,17 @@ public class QueryOperations {
         PreparedStatement statement = connection.prepareStatement("SELECT * FROM OPINIONS");
         ResultSet rs = statement.executeQuery();
         ArrayList<String> Baselines = new ArrayList<>();
-        while(rs.next()) {
+        while (rs.next()) {
             String statusOfOpinion;
-            if(rs.getBoolean("opinionStatus")) {
-                statusOfOpinion= "positive";
-            }
-            else{
-                statusOfOpinion= "negative";
+            if (rs.getBoolean("opinionStatus")) {
+                statusOfOpinion = "positive";
+            } else {
+                statusOfOpinion = "negative";
             }
 
             String temp = rs.getInt("id") + " " + rs.getString("staffNumber") + " "
                     + rs.getString("opinionDate") + " " + statusOfOpinion + " " + rs.getString("wage")
-                    + " " + rs.getString("comment") ;
+                    + " " + rs.getString("comment");
             Baselines.add(temp);
         }
         return Baselines;

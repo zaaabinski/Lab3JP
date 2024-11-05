@@ -15,13 +15,10 @@ public class DatabaseConnection {
             Class.forName("org.h2.Driver");
             // Establish a connection
             connection = DriverManager.getConnection(URL, USER, PASSWORD);
-            //System.out.println("Connection to H2 database established successfully.");
         } catch (ClassNotFoundException e) {
             System.err.println("H2 Driver not found. Please add the H2 dependency.");
-            e.printStackTrace();
         } catch (SQLException e) {
             System.err.println("Failed to connect to the database.");
-            e.printStackTrace();
         }
         return connection;
     }
