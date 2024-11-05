@@ -2,7 +2,9 @@ package org.FrontEnd;
 
 import org.BackEnd.DatabaseConnection;
 import org.BackEnd.QueryOperations;
+import org.BackEnd.TrendLine;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -10,7 +12,7 @@ import java.util.Scanner;
 
 public class Front {
 
-    public static void StartUI() {
+    public static void StartUI(Connection connection) {
 
         Scanner sc = new Scanner(System.in);
 
@@ -20,23 +22,32 @@ public class Front {
             System.out.println("1. Display opinions ");
             System.out.println("2. Add new opinion ");
             System.out.println("3. Delete opinion ");
-            System.out.println("4. Close application");
+            System.out.println("4. Display trend");
+            System.out.println("5. Close application");
 
             int choice = sc.nextInt();
 
             switch (choice) {
                 case 1:
-                    Display();
+                    Display(connection);
                     break;
                 case 2:
-                    Adding();
+                    Adding(connection);
                     break;
                 case 3:
-                    System.out.print("Which opinioon would you like to delete? ");
+                    System.out.print("Which opinion would you like to delete? ");
                     int idToDelete = sc.nextInt();
-                    Deleting(idToDelete);
+                    Deleting(connection, idToDelete);
                     break;
                 case 4:
+                    System.out.print("Set staff number for trend line: ");
+                    int staffNumber = sc.nextInt();
+                    System.out.print("Set start date of the range:  ");
+                    String startDate = sc.next();
+                    System.out.print("Set end date of the range: ");
+                    String endDate = sc.next();
+                    DisplayTrendLine(connection, staffNumber,startDate, endDate);
+                case 5:
                     System.exit(0);
                     break;
                 default:
@@ -45,7 +56,7 @@ public class Front {
         }
     }
 
-    private static void Adding() {
+    private static void Adding(Connection connection) {
         int staffNumber;
         String dateOfOpinion;
         String statusCheck;
@@ -55,8 +66,6 @@ public class Front {
         Scanner sc = new Scanner(System.in);
         System.out.println("Adding opinion");
         System.out.println("To add an opinion fill given variables with proper data ");
-     /*   System.out.println("Example Staff number = 1, date = YYYY-MM-DD, true - positive/false - negative");
-        System.out.println("wage of opnion in scale from 1 to 10 ,comment = 'your comment here");*/
 
         try {
             System.out.print("Enter staff number (number value): ");
@@ -93,7 +102,7 @@ public class Front {
 
             if (input.equalsIgnoreCase("y")) {
                 try {
-                    QueryOperations.InsertToBase(staffNumber, dateOfOpinion, status, wage, comment, DatabaseConnection.GetConnection());
+                    QueryOperations.InsertToBase(staffNumber, dateOfOpinion, status, wage, comment, connection);
                     System.out.println("Added opinion for staff " + staffNumber);
                 } catch (SQLException e) {
                     System.out.println("Something went wrong when inserting to query");
@@ -106,10 +115,10 @@ public class Front {
         }
     }
 
-    private static void Display() {
+    private static void Display(Connection connection) {
         Scanner sc = new Scanner(System.in);
         try {
-            ArrayList<String> Base = QueryOperations.ShowBase(DatabaseConnection.GetConnection());
+            ArrayList<String> Base = QueryOperations.ShowBase(connection);
             for(String line : Base) {
                 System.out.println(line);
             }
@@ -120,9 +129,15 @@ public class Front {
         }
     }
 
-    private static void Deleting(int idToDelete) {
+    private static void DisplayTrendLine(Connection connection, int staffNumber,String dateOne, String dateTwo)
+    {
+        int trend = TrendLine.GetTrend(connection,staffNumber,dateOne, dateTwo);
+        System.out.println("For staff number " + staffNumber + " his trend is equal to " + trend);
+    }
+
+    private static void Deleting(Connection connection, int idToDelete) {
         try {
-            QueryOperations.DeleteFromBase(idToDelete, DatabaseConnection.GetConnection());
+            QueryOperations.DeleteFromBase(idToDelete, connection);
             System.out.println("Deleted opinion with id " + idToDelete);
         } catch (SQLException e) {
             System.out.println("Something went wrong when deleting from the table");

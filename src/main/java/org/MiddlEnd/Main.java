@@ -1,5 +1,7 @@
-package org.BackEnd;
+package org.MiddlEnd;
 
+import org.BackEnd.DatabaseConnection;
+import org.BackEnd.QueryOperations;
 import org.FrontEnd.Front;
 
 import java.sql.Connection;
@@ -15,9 +17,9 @@ public class Main {
                 {
                     QueryOperations.CreateTable(connection);
                 }
-            Front.StartUI();
+            Front.StartUI(connection);
         } catch (SQLException e) {
-            System.out.println("Something went wrong");
+            System.out.println("Something went wrong with connection to database");
         }
     }
 }
