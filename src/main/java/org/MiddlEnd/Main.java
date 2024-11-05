@@ -11,6 +11,7 @@ public class Main {
 
     public static void main(String[] args){
         Connection connection;
+
         try {
             connection = DatabaseConnection.GetConnection();
                 if (!QueryOperations.CheckIfTableExists(connection))

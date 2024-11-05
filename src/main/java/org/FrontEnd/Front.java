@@ -1,8 +1,7 @@
 package org.FrontEnd;
 
-import org.BackEnd.DatabaseConnection;
 import org.BackEnd.QueryOperations;
-import org.BackEnd.TrendLine;
+import org.BackEnd.Trend;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -131,7 +130,7 @@ public class Front {
 
     private static void DisplayTrendLine(Connection connection, int staffNumber,String dateOne, String dateTwo)
     {
-        int trend = TrendLine.GetTrend(connection,staffNumber,dateOne, dateTwo);
+        int trend = Trend.GetTrend(connection,staffNumber,dateOne, dateTwo);
         System.out.println("For staff number " + staffNumber + " his trend is equal to " + trend);
     }
 
