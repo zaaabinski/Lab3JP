@@ -12,7 +12,6 @@ import java.util.Scanner;
 public class Front {
 
     public static void StartUI(Connection connection) {
-
         Scanner sc = new Scanner(System.in);
 
         while (true) {
@@ -28,24 +27,17 @@ public class Front {
 
             switch (choice) {
                 case 1:
-                    Display(connection);
+                    Display(connection, sc);
                     break;
                 case 2:
-                    Adding(connection);
+                    Adding(connection,sc);
                     break;
                 case 3:
-                    System.out.print("Which opinion would you like to delete? ");
-                    int idToDelete = sc.nextInt();
-                    Deleting(connection, idToDelete);
+                    Deleting(connection,sc);
                     break;
                 case 4:
-                    System.out.print("Set staff number for trend line: ");
-                    int staffNumber = sc.nextInt();
-                    System.out.print("Set start date of the range:  ");
-                    String startDate = sc.next();
-                    System.out.print("Set end date of the range: ");
-                    String endDate = sc.next();
-                    DisplayTrendLine(connection, staffNumber,startDate, endDate);
+                    DisplayTrend(connection,sc);
+                    break;
                 case 5:
                     System.exit(0);
                     break;
@@ -55,14 +47,14 @@ public class Front {
         }
     }
 
-    private static void Adding(Connection connection) {
+    private static void Adding(Connection connection,Scanner sc) {
         int staffNumber;
         String dateOfOpinion;
         String statusCheck;
         boolean status = false;
         int wage;
         String comment;
-        Scanner sc = new Scanner(System.in);
+
         System.out.println("Adding opinion");
         System.out.println("To add an opinion fill given variables with proper data ");
 
@@ -77,19 +69,19 @@ public class Front {
 
             System.out.print("Enter wage of opnion (number value 1-10): ");
             wage = sc.nextInt();
-            if(wage>10)
-                wage=10;
-            else if(wage<=0)
-                wage=1;
+
+            if (wage > 10)
+                wage = 10;
+            else if (wage <= 0)
+                wage = 1;
+
             sc.nextLine();
 
             System.out.print("Enter comment : ");
             comment = sc.nextLine();
 
-
             System.out.print("Enter status (positive/negative): ");
             statusCheck = sc.nextLine();
-
 
             if (statusCheck.equalsIgnoreCase("positive"))
                 status = true;
@@ -103,38 +95,56 @@ public class Front {
                 try {
                     QueryOperations.InsertToBase(staffNumber, dateOfOpinion, status, wage, comment, connection);
                     System.out.println("Added opinion for staff " + staffNumber);
+                    sc.nextLine();
                 } catch (SQLException e) {
                     System.out.println("Something went wrong when inserting to query");
                 }
             } else {
                 System.out.println("Adding canceled");
+                sc.nextLine();
             }
         } catch (Exception e) {
             System.out.println("Use proper format for the data");
         }
     }
 
-    private static void Display(Connection connection) {
-        Scanner sc = new Scanner(System.in);
+    private static void Display(Connection connection, Scanner sc) {
         try {
             ArrayList<String> Base = QueryOperations.ShowBase(connection);
-            for(String line : Base) {
+            for (String line : Base) {
                 System.out.println(line);
             }
+            sc.nextLine();
             sc.nextLine();
         } catch (SQLException e) {
             System.out.println("Something went wrong when displaying the table");
             sc.nextLine();
+            sc.nextLine();
         }
     }
 
-    private static void DisplayTrendLine(Connection connection, int staffNumber,String dateOne, String dateTwo)
-    {
-        int trend = Trend.GetTrend(connection,staffNumber,dateOne, dateTwo);
-        System.out.println("For staff number " + staffNumber + " his trend is equal to " + trend);
+    private static void DisplayTrend(Connection connection,Scanner sc) {
+         System.out.print("Set staff number for trend line: ");
+        int staffNumber = sc.nextInt();
+        System.out.print("Set start date of the range:  ");
+        String startDate = sc.next();
+        System.out.print("Set end date of the range: ");
+        String endDate = sc.next();
+        String status;
+
+        int trend = Trend.GetTrend(connection, staffNumber, startDate, endDate);
+        if (trend > 0)
+            status = "positive";
+        else
+            status = "negative";
+        System.out.println("For staff number " + staffNumber + " his trend is equal to " + trend + " which is " + status);
+        sc.nextLine();
+        sc.nextLine();
     }
 
-    private static void Deleting(Connection connection, int idToDelete) {
+    private static void Deleting(Connection connection,Scanner sc) {
+        System.out.print("Which opinion would you like to delete? ");
+        int idToDelete = sc.nextInt();
         try {
             QueryOperations.DeleteFromBase(idToDelete, connection);
             System.out.println("Deleted opinion with id " + idToDelete);

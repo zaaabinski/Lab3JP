@@ -4,8 +4,7 @@ import java.sql.*;
 
 public class Trend {
 
-    public static int GetTrend(Connection connection, int staffNumber, String start, String end)
-    {
+    public static int GetTrend(Connection connection, int staffNumber, String start, String end) {
         int trend=0;
         try {
             PreparedStatement statement = connection.prepareStatement("SELECT * FROM OPINIONS where opinionDate between ? and ? and staffNumber = ?");
